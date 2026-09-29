@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanzu Films & Series - Streaming Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#070B19',
+                            900: '#0B132B',
+                            800: '#1C2541',
+                            700: '#2A365B',
+                            600: '#3A4B7C',
+                        },
+                        cyan: {
+                            accent: '#00B4D8',
+                            light: '#4CC9F0',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B132B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1C2541;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00B4D8;
+        }
+        /* Glassmorphism panel styling */
+        .glass-panel {
+            background: rgba(28, 37, 65, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-accent {
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.35);
+        }
+    </style>
+</head>
+<body class="bg-navy-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-accent selection:text-navy-950">
+
+    <header class="sticky top-0 z-40 glass-panel border-b border-navy-800/80 px-4 lg:px-8 py-3.5 flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-4">
+            <!-- Hamburger Menu Trigger -->
+            <button id="hamburgerBtn" onclick="toggleSidebar()" class="p-2.5 rounded-xl text-slate-300 hover:text-cyan-accent hover:bg-navy-800 transition-all focus:outline-none" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="filterCategory('All')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-accent to-blue-600 flex items-center justify-center glow-accent">
+                    <i class="fa-solid fa-film text-navy-950 text-xl font-black"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wider uppercase bg-gradient-to-r from-white via-slate-200 to-cyan-light bg-clip-text text-transparent">
+                        WANZU <span class="text-cyan-accent font-light">FILMS</span>
+                    </h1>
+                    <p class="text-[10px] tracking-widest text-slate-400 uppercase -mt-1 font-semibold">Cinema & Series</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Interactive Search Bar -->
+        <div class="hidden md:flex items-center flex-1 max-w-lg mx-8 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400"></i>
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search films, series, genres, cast..." 
+                class="w-full bg-navy-900/90 text-sm text-slate-200 pl-11 pr-10 py-2.5 rounded-full border border-navy-700 focus:outline-none focus:border-cyan-accent focus:ring-1 focus:ring-cyan-accent transition-all placeholder-slate-400 shadow-inner">
+            <button id="clearSearch" onclick="resetSearch()" class="hidden absolute right-3.5 text-slate-400 hover:text-white p-1">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Right Header Action Controls -->
+        <div class="flex items-center gap-3">
+            <button onclick="toggleMobileSearch()" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-cyan-accent">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+            </button>
+
+            <!-- Add Video Content Trigger -->
+            <button onclick="openAddModal()" class="bg-gradient-to-r from-cyan-accent to-cyan-light hover:brightness-110 text-navy-950 font-bold px-4 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-cyan-500/20 transition-all transform hover:-translate-y-0.5">
+                <i class="fa-solid fa-plus-circle text-base"></i>
+                <span class="hidden sm:inline">Add Content</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Search Drawer Bar -->
+    <div id="mobileSearchContainer" class="hidden md:hidden bg-navy-900 px-4 py-3 border-b border-navy-800">
+        <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i>
+            <input type="text" id="mobileSearchInput" oninput="handleSearch(this.value)" placeholder="Search catalog..." 
+                class="w-full bg-navy-950 text-sm text-slate-200 pl-10 pr-4 py-2 rounded-lg border border-navy-700 focus:outline-none focus:border-cyan-accent">
+        </div>
+    </div>
+
+    <div id="sidebarOverlay" onclick="closeSidebar()" class="fixed inset-0 bg-navy-950/80 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-navy-900 border-r border-navy-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between shadow-2xl">
+        <div>
+            <div class="p-5 border-b border-navy-800 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-clapperboard text-cyan-accent text-lg"></i>
+                    <span class="font-bold tracking-wide text-white">WANZU NAVIGATION</span>
+                </div>
+                <button id="closeSidebarBtn" onclick="closeSidebar()" class="p-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <nav class="p-4 space-y-1">
+                <a href="#" onclick="selectNavFilter('All')" class="nav-link active flex items-center gap-3.5 px-4 py-3 rounded-xl text-slate-300 hover:bg-navy-800 hover:text-cyan-light transition-all font-medium">
+                    <i class="fa-solid fa-border-all w-5 text-center text-cyan-accent"></i>
+                    <span>All Releases</span>
+                </a>
+                <a href="#" onclick="selectNavFilter('Action')" class="nav-link flex items-center gap-3.5 px-4 py-3 rounded-xl text-slate-300 hover:bg-navy-800 hover:text-cyan-light transition-all font-medium">
+                    <i class="fa-solid fa-fire w-5 text-center text-amber-400"></i>
+                    <span>Action Films</span>
+                </a>
+                <a href="#" onclick="selectNavFilter('Films')" class="nav-link flex items-center gap-3.5 px-4 py-3 rounded-xl text-slate-300 hover:bg-navy-800 hover:text-cyan-light transition-all font-medium">
+                    <i class="fa-solid fa-film w-5 text-center text-cyan-400"></i>
+                    <span>Movies & Films</span>
+                </a>
+                <a href="#" onclick="selectNavFilter('Series')" class="nav-link flex items-center gap-3.5 px-4 py-3 rounded-xl text-slate-300 hover:bg-navy-800 hover:text-cyan-light transition-all font-medium">
+                    <i class="fa-solid fa-layer-group w-5 text-center text-purple-400"></i>
+                    <span>TV Series</span>
+                </a>
+                <a href="#" onclick="selectNavFilter('Trending')" class="nav-link flex items-center gap-3.5 px-4 py-3 rounded-xl text-slate-300 hover:bg-navy-800 hover:text-cyan-light transition-all font-medium">
+                    <i class="fa-solid fa-bolt w-5 text-center text-rose-400"></i>
+                    <span>Trending Now</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+        <!-- Category Tabs -->
+        <section class="flex items-center justify-between gap-4 overflow-x-auto pb-2 border-b border-navy-800">
+            <div class="flex items-center gap-2" id="categoryTabs">
+                <button onclick="filterCategory('All')" data-category="All" class="cat-btn bg-cyan-accent text-navy-950 font-bold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all shadow-md">
+                    All Content
+                </button>
+                <button onclick="filterCategory('Action')" data-category="Action" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+                    <i class="fa-solid fa-fire text-amber-400 mr-1.5"></i>Action
+                </button>
+                <button onclick="filterCategory('Films')" data-category="Films" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+                    <i class="fa-solid fa-video text-cyan-400 mr-1.5"></i>Films
+                </button>
+                <button onclick="filterCategory('Series')" data-category="Series" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+                    <i class="fa-solid fa-tv text-purple-400 mr-1.5"></i>Series
+                </button>
+                <button onclick="filterCategory('Trending')" data-category="Trending" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+                    <i class="fa-solid fa-bolt text-rose-400 mr-1.5"></i>Trending
+                </button>
+            </div>
+            
+            <div id="resultsCount" class="text-xs font-semibold text-slate-400 shrink-0">
+                Loading...
+            </div>
+        </section>
+
+        <!-- Featured Spotlight Hero Banner -->
+        <section id="heroBanner" class="relative rounded-2xl overflow-hidden shadow-2xl border border-navy-800 bg-navy-900 group">
+            <div class="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/85 to-transparent z-10"></div>
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1600&q=80" 
+                 alt="Featured Release" 
+                 class="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-50">
+
+            <div class="relative z-20 p-6 sm:p-10 lg:p-12 max-w-2xl space-y-4">
+                <div class="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-accent to-blue-600 text-navy-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                    <i class="fa-solid fa-star"></i> Featured Release
+                </div>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
+                    Shadow Hunter: Tokyo Protocol
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base line-clamp-3 font-normal leading-relaxed">
+                    An elite martial operative goes undercover in futuristic Tokyo to disassemble an underground neural syndicate. High-octane martial arts, cyber espionage, and relentless action.
+                </p>
+                <div class="flex flex-wrap items-center gap-4 pt-2">
+                    <button onclick="playVideo('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'Shadow Hunter: Tokyo Protocol', 'Action', 'An elite martial operative goes undercover in futuristic Tokyo.')" 
+                            class="bg-gradient-to-r from-cyan-accent to-cyan-light hover:brightness-110 text-navy-950 font-bold px-6 py-3 rounded-xl flex items-center gap-2.5 shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-play text-lg"></i>
+                        <span>Stream Now</span>
+                    </button>
+                    <div class="flex items-center gap-3 text-xs text-slate-300 font-semibold bg-navy-950/60 px-4 py-3 rounded-xl border border-navy-800">
+                        <span class="text-amber-400"><i class="fa-solid fa-star mr-1"></i>4.9</span>
+                        <span>•</span>
+                        <span>2h 18m</span>
+                        <span>•</span>
+                        <span class="text-cyan-accent">4K Ultra HD</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Content Grid -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold text-white tracking-wide flex items-center gap-2.5">
+                    <i class="fa-solid fa-compass text-cyan-accent"></i>
+                    <span id="gridTitle">All Releases</span>
+                </h3>
+            </div>
+
+            <!-- Video Cards Grid -->
+            <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Javascript dynamic injection -->
+            </div>
+
+            <!-- No Search Results Found -->
+            <div id="noResults" class="hidden text-center py-16 bg-navy-900/50 rounded-2xl border border-navy-800">
+                <i class="fa-solid fa-film text-5xl text-navy-700 mb-3"></i>
+                <h4 class="text-lg font-bold text-slate-300">No content found</h4>
+                <p class="text-sm text-slate-500 mt-1">Try searching for something else or reset your category filters.</p>
+                <button onclick="resetFilters()" class="mt-4 bg-navy-800 hover:bg-navy-700 text-cyan-accent font-semibold px-4 py-2 rounded-lg text-xs">
+                    Reset All Filters
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Dashboard Footer with Copyright -->
+    <footer class="mt-auto border-t border-navy-800/80 bg-navy-900/60 backdrop-blur-md py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-md bg-cyan-accent flex items-center justify-center text-navy-950 font-black text-xs">
+                    W
+                </div>
+                <span class="font-semibold text-slate-300">Wanzu Films & Series</span>
+            </div>
+            <p class="text-center">
+                &copy; <span id="copyrightYear"></span> <strong class="text-slate-200">Wanzu Films & Series</strong>. All rights reserved.
+            </p>
+            <div class="flex items-center gap-4 text-slate-400">
+                <a href="#" class="hover:text-cyan-accent transition-colors">Privacy Policy</a>
+                <span>•</span>
+                <a href="#" class="hover:text-cyan-accent transition-colors">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="fixed inset-0 bg-navy-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-navy-900 border border-navy-800 rounded-2xl w-full max-w-4xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-navy-800 flex items-center justify-between bg-navy-950/50">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <span id="modalCategoryBadge" class="bg-cyan-accent/20 text-cyan-accent font-bold text-[10px] uppercase px-2.5 py-1 rounded-md border border-cyan-accent/30 shrink-0">
+                        Category
+                    </span>
+                    <h3 id="modalVideoTitle" class="text-base sm:text-lg font-bold text-white truncate">
+                        Video Title
+                    </h3>
+                </div>
+                <button onclick="closeModal()" class="p-2 text-slate-400 hover:text-white hover:bg-navy-800 rounded-lg transition-colors ml-2 shrink-0">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+                <iframe id="videoIframe" class="w-full h-full border-0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen></iframe>
+            </div>
+
+            <div class="p-4 sm:p-5 border-t border-navy-800 bg-navy-950/40 space-y-2">
+                <h4 class="text-xs uppercase font-bold text-cyan-accent tracking-wider">Synopsis</h4>
+                <p id="modalVideoDesc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    Description text content...
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Content Modal -->
+    <div id="addModal" class="fixed inset-0 bg-navy-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-navy-900 border border-navy-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-navy-800 pb-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-cyan-accent"></i> Add New Film or Series
+                </h3>
+                <button onclick="closeAddModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="addFilmForm" onsubmit="handleAddFilm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Title *</label>
+                    <input type="text" id="filmTitle" required placeholder="e.g. Speed Demon 2"
+                        class="w-full bg-navy-950 border border-navy-700 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-accent">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Category *</label>
+                        <select id="filmCategory" required class="w-full bg-navy-950 border border-navy-700 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-accent">
+                            <option value="Action">Action</option>
+                            <option value="Films">Films</option>
+                            <option value="Series">Series</option>
+                            <option value="Trending">Trending</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Duration *</label>
+                        <input type="text" id="filmDuration" required placeholder="e.g. 1h 45m or 10 Episodes"
+                            class="w-full bg-navy-950 border border-navy-700 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-accent">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Embed Stream URL (YouTube, Vimeo, MP4) *</label>
+                    <input type="url" id="filmEmbedUrl" required placeholder="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+                        class="w-full bg-navy-950 border border-navy-700 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-accent">
+                    <p class="text-[10px] text-slate-400 mt-1">Use embed links like <code>https://www.youtube.com/embed/VIDEO_ID</code></p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Poster Thumbnail URL</label>
+                    <input type="url" id="filmThumb" placeholder="https://images.unsplash.com/..."
+                        class="w-full bg-navy-950 border border-navy-700 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-accent">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Synopsis / Description *</label>
+                    <textarea id="filmDesc" required rows="3" placeholder="Brief movie description..."
+                        class="w-full bg-navy-950 border border-navy-700 rounded-xl px-3.5 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-accent"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-navy-800">
+                    <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-navy-800 hover:bg-navy-700 text-slate-300">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-cyan-accent hover:brightness-110 text-navy-950 shadow-lg shadow-cyan-500/20">
+                        Save to Catalog
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Code -->
+    <script>
+        // Initial Movie & Series Database
+        let catalog = [
+            {
+                id: "vid_1",
+                title: "Shadow Hunter: Tokyo Protocol",
+                category: "Action",
+                embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1",
+                duration: "2h 18m",
+                year: "2026",
+                rating: "4.9",
+                thumbnail: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80",
+                description: "An elite martial operative goes undercover in futuristic Tokyo to disassemble an underground neural syndicate."
+            },
+            {
+                id: "vid_2",
+                title: "Urban Recon: Cyber Division",
+                category: "Action",
+                embedUrl: "https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1",
+                duration: "1h 52m",
+                year: "2025",
+                rating: "4.7",
+                thumbnail: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
+                description: "Tactical squads fight rogue AI forces in a gridlocked dystopian metropolis."
+            },
+            {
+                id: "vid_3",
+                title: "Ocean Echoes: Abyss Chronicles",
+                category: "Films",
+                embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1",
+                duration: "2h 05m",
+                year: "2025",
+                rating: "4.8",
+                thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+                description: "A deep sea expedition unveils prehistoric aquatic anomalies near uncharted oceanic trenches."
+            },
+            {
+                id: "vid_4",
+                title: "Cyber Chronicles (Season 1)",
+                category: "Series",
+                embedUrl: "https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1",
+                duration: "8 Episodes",
+                year: "2026",
+                rating: "4.9",
+                thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
+                description: "A cyberpunk mini-series following augmented detectives untangling corporate power structures."
+            },
+            {
+                id: "vid_5",
+                title: "Apex Predator: Redline Velocity",
+                category: "Trending",
+                embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1",
+                duration: "1h 48m",
+                year: "2026",
+                rating: "4.8",
+                thumbnail: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80",
+                description: "High-octane vehicular chases across desert speedways with unmatched velocity and adrenaline."
+            },
+            {
+                id: "vid_6",
+                title: "Nightwatch Protocol (Season 2)",
+                category: "Series",
+                embedUrl: "https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1",
+                duration: "6 Episodes",
+                year: "2025",
+                rating: "4.7",
+                thumbnail: "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=600&q=80",
+                description: "Undercover investigators unravel night-shift mysteries in high-stakes political circles."
+            }
+        ];
+
+        // Global State
+        let currentCategory = 'All';
+        let searchQuery = '';
+
+        // DOM elements
+        const videoGrid = document.getElementById('videoGrid');
+        const noResults = document.getElementById('noResults');
+        const searchInput = document.getElementById('searchInput');
+        const mobileSearchInput = document.getElementById('mobileSearchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const resultsCount = document.getElementById('resultsCount');
+        const gridTitle = document.getElementById('gridTitle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const videoModal = document.getElementById('videoModal');
+        const videoIframe = document.getElementById('videoIframe');
+        const modalVideoTitle = document.getElementById('modalVideoTitle');
+        const modalVideoDesc = document.getElementById('modalVideoDesc');
+        const modalCategoryBadge = document.getElementById('modalCategoryBadge');
+        const addModal = document.getElementById('addModal');
+
+        // Render Cards Dynamically
+        function renderGrid() {
+            const filtered = catalog.filter(item => {
+                const matchesCategory = currentCategory === 'All' || item.category === currentCategory;
+                const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      item.category.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            resultsCount.textContent = `Showing ${filtered.length} of ${catalog.length} titles`;
+            gridTitle.textContent = currentCategory === 'All' ? 'All Releases' : currentCategory;
+
+            if (filtered.length === 0) {
+                videoGrid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+
+            videoGrid.innerHTML = filtered.map(item => {
+                let badgeColor = 'bg-cyan-accent text-navy-950';
+                if(item.category === 'Action') badgeColor = 'bg-amber-400 text-navy-950';
+                if(item.category === 'Series') badgeColor = 'bg-purple-500 text-white';
+                if(item.category === 'Trending') badgeColor = 'bg-rose-500 text-white';
+
+                return `
+                <div class="glass-panel rounded-2xl overflow-hidden hover:border-cyan-accent/50 transition-all duration-300 flex flex-col group shadow-lg">
+                    <div class="relative aspect-video overflow-hidden cursor-pointer" onclick="playVideo('${item.embedUrl}', '${escapeHtml(item.title)}', '${item.category}', '${escapeHtml(item.description)}')">
+                        <img src="${item.thumbnail}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-transparent to-transparent opacity-80"></div>
+                        
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-navy-950/40 backdrop-blur-xs">
+                            <div class="w-12 h-12 rounded-full bg-cyan-accent text-navy-950 flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play text-lg pl-0.5"></i>
+                            </div>
+                        </div>
+
+                        <div class="absolute top-3 left-3">
+                            <span class="${badgeColor} font-bold text-[10px] uppercase px-2.5 py-1 rounded-md shadow-md tracking-wider">
+                                ${item.category}
+                            </span>
+                        </div>
+
+                        <div class="absolute bottom-3 right-3 bg-navy-950/80 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-semibold text-slate-200 border border-navy-700">
+                            ${item.duration}
+                        </div>
+                    </div>
+
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                                <span>${item.year || '2026'}</span>
+                                <span class="text-amber-400 font-semibold"><i class="fa-solid fa-star text-[10px] mr-1"></i>${item.rating || '4.8'}</span>
+                            </div>
+                            <h4 class="font-bold text-white text-base group-hover:text-cyan-light transition-colors line-clamp-1">
+                                ${escapeHtml(item.title)}
+                            </h4>
+                            <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                                ${escapeHtml(item.description)}
+                            </p>
+                        </div>
+
+                        <button onclick="playVideo('${item.embedUrl}', '${escapeHtml(item.title)}', '${item.category}', '${escapeHtml(item.description)}')" 
+                                class="w-full bg-navy-800 hover:bg-cyan-accent hover:text-navy-950 text-slate-200 font-semibold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-circle-play"></i>
+                            <span>Stream Now</span>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Helper functions
+        function escapeHtml(str) {
+            return str ? str.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.dataset.category === cat) {
+                    btn.className = "cat-btn bg-cyan-accent text-navy-950 font-bold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all shadow-md";
+                } else {
+                    btn.className = "cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all";
+                }
+            });
+            renderGrid();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val;
+            searchInput.value = val;
+            mobileSearchInput.value = val;
+
+            if (val.trim().length > 0) {
+                clearSearchBtn.classList.remove('hidden');
+            } else {
+                clearSearchBtn.classList.add('hidden');
+            }
+            renderGrid();
+        }
+
+        function resetSearch() {
+            handleSearch('');
+        }
+
+        function resetFilters() {
+            searchQuery = '';
+            searchInput.value = '';
+            mobileSearchInput.value = '';
+            clearSearchBtn.classList.add('hidden');
+            filterCategory('All');
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('opacity-0');
+            sidebarOverlay.classList.toggle('pointer-events-none');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('opacity-0');
+            sidebarOverlay.classList.add('pointer-events-none');
+        }
+
+        function selectNavFilter(cat) {
+            filterCategory(cat);
+            closeSidebar();
+        }
+
+        function toggleMobileSearch() {
+            const container = document.getElementById('mobileSearchContainer');
+            container.classList.toggle('hidden');
+        }
+
+        function playVideo(url, title, category, desc) {
+            videoIframe.src = url;
+            modalVideoTitle.textContent = title;
+            modalCategoryBadge.textContent = category;
+            modalVideoDesc.textContent = desc;
+
+            videoModal.classList.remove('opacity-0', 'pointer-events-none');
+            videoModal.querySelector('div').classList.remove('scale-95');
+        }
+
+        function closeModal() {
+            videoIframe.src = '';
+            videoModal.classList.add('opacity-0', 'pointer-events-none');
+            videoModal.querySelector('div').classList.add('scale-95');
+        }
+
+        function openAddModal() {
+            addModal.classList.remove('opacity-0', 'pointer-events-none');
+            addModal.querySelector('div').classList.remove('scale-95');
+        }
+
+        function closeAddModal() {
+            addModal.classList.add('opacity-0', 'pointer-events-none');
+            addModal.querySelector('div').classList.add('scale-95');
+        }
+
+        function handleAddFilm(e) {
+            e.preventDefault();
+            const newTitle = document.getElementById('filmTitle').value;
+            const newCat = document.getElementById('filmCategory').value;
+            const newDuration = document.getElementById('filmDuration').value;
+            const newEmbed = document.getElementById('filmEmbedUrl').value;
+            const newThumb = document.getElementById('filmThumb').value || 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80';
+            const newDesc = document.getElementById('filmDesc').value;
+
+            const newItem = {
+                id: 'vid_' + (catalog.length + 1),
+                title: newTitle,
+                category: newCat,
+                embedUrl: newEmbed,
+                duration: newDuration,
+                year: new Date().getFullYear().toString(),
+                rating: '5.0',
+                thumbnail: newThumb,
+                description: newDesc
+            };
+
+            catalog.unshift(newItem);
+            renderGrid();
+            closeAddModal();
+            document.getElementById('addFilmForm').reset();
+        }
+
+        // Initialize script & dynamic copyright
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('copyrightYear').textContent = new Date().getFullYear();
+            renderGrid();
+        });
+    </script>
+</body>
+</html>
