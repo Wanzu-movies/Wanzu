@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cartoons & Kids — Wanzu Films</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 950: '#030a16', 900: '#071326', 800: '#0a172c', 700: '#1e293b' },
+            cyan: { accent: '#38bdf8' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-navy-950 text-slate-200 font-sans min-h-screen pb-12">
+
+  <!-- Header -->
+  <header class="bg-navy-900 border-b border-navy-700 p-4 sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <a href="index.html" class="text-xl font-extrabold tracking-wider text-white">WANZU <span class="text-cyan-accent">KIDS</span></a>
+      <a href="index.html" class="text-cyan-accent text-sm font-semibold hover:underline">← Home</a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 mt-4">
+
+    <!-- Section Title -->
+    <div class="mb-6 flex justify-between items-end border-b border-navy-800 pb-3">
+      <div>
+        <h1 class="text-2xl font-extrabold text-white"><i class="fa-solid fa-child text-amber-400 mr-2"></i>Cartoon Collection</h1>
+        <p class="text-slate-400 text-xs mt-1">First 3 Videos are Free! Pay UGX 2,000 to unlock full premium episodes.</p>
+      </div>
+      <span id="passStatusBadge" class="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold px-3 py-1 rounded-full">
+        Free Preview Mode
+      </span>
+    </div>
+
+    <!-- Main Video Player -->
+    <div class="bg-navy-800 border border-navy-700 rounded-xl overflow-hidden shadow-2xl mb-8">
+      <div class="relative w-full aspect-video bg-black">
+        <video id="cartoonPlayer" controls controlsList="nodownload" class="w-full h-full">
+          <source id="cartoonSource" src="https://your-server.com/cartoons/ep1.mp4" type="video/mp4">
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+      <div class="p-4 flex justify-between items-center flex-wrap gap-2">
+        <div>
+          <span id="nowPlayingBadge" class="text-xs font-bold text-emerald-400 uppercase tracking-wider">FREE VIDEO</span>
+          <h2 id="nowPlayingTitle" class="text-lg font-bold text-white mt-0.5">Cartoon Ep 1: The Adventure Begins</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cartoon Episode List -->
+    <h2 class="text-lg font-bold text-white mb-4">Select Episode</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="cartoonGrid">
+      <!-- Dynamically generated via Javascript -->
+    </div>
+
+  </main>
+
+  <!-- Lock Screen Modal (Triggered on Ep 4, Ep 5, etc.) -->
+  <div id="lockModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-navy-800 border border-navy-700 rounded-2xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl relative">
+      
+      <!-- Close Modal Button -->
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-14 h-14 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500/30">
+        <i class="fa-solid fa-lock text-2xl"></i>
+      </div>
+
+      <h3 class="text-xl font-bold text-white mb-2">Unlock Premium Cartoons</h3>
+      <p class="text-slate-400 text-xs mb-6">Episodes 4, 5 and beyond require a single-device VIP access pass (UGX 2,000).</p>
+
+      <!-- Steps Card -->
+      <div class="bg-navy-900 border border-navy-700 p-3.5 rounded-lg text-left text-xs text-slate-300 space-y-2 mb-6">
+        <p class="font-bold text-cyan-accent uppercase tracking-wider">How to unlock:</p>
+        <p>1. Pay <strong>UGX 2,000</strong> for your single-device code.</p>
+        <p>2. Send receipt/message to WhatsApp: <strong class="text-white">+256 754 958 464</strong></p>
+        <p>3. Enter your secret code below to activate on this device.</p>
+      </div>
+
+      <!-- WhatsApp Direct Link -->
+      <a href="https://wa.me/256754958464?text=Hello%2C%20I%20want%20to%20pay%202000%20UGX%20to%20unlock%20Cartoons%20on%20my%20device" 
+         target="_blank" 
+         class="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-all mb-4 text-xs uppercase tracking-wider">
+        <i class="fa-brands fa-whatsapp text-base"></i> Get Secret Code via WhatsApp
+      </a>
+
+      <!-- Code Input Form -->
+      <form onsubmit="verifyCartoonCode(event)" class="space-y-3">
+        <input type="text" id="cartoonCodeInput" placeholder="ENTER SECRET CODE" required 
+               class="w-full bg-navy-950 border border-navy-700 focus:border-cyan-accent text-white text-center text-base font-mono tracking-widest py-2.5 px-4 rounded-lg outline-none uppercase">
+        
+        <p id="modalError" class="text-rose-400 text-xs hidden font-semibold bg-rose-500/10 border border-rose-500/20 p-2 rounded"></p>
+        
+        <button type="submit" class="w-full bg-cyan-accent hover:bg-cyan-400 text-navy-950 font-bold py-3 px-4 rounded-lg transition-all text-xs uppercase tracking-wider">
+          Unlock on This Device
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // List of Valid Admin Secret Codes
+    const ADMIN_VALID_CODES = [
+      "KIDS2026",
+      "CARTOON2K",
+      "WANZU958",
+      "PASS754",
+      "SECRET2000"
+    ];
+
+    // Cartoons Database (EP 1 to 3 are free, EP 4 & 5 require UGX 2,000 secret code)
+    const cartoons = [
+      { id: 1, ep: 1, title: "Cartoon Ep 1: The Adventure Begins", isFree: true, url: "https://your-server.com/cartoons/ep1.mp4" },
+      { id: 2, ep: 2, title: "Cartoon Ep 2: Magical Forest", isFree: true, url: "https://your-server.com/cartoons/ep2.mp4" },
+      { id: 3, ep: 3, title: "Cartoon Ep 3: Treasure Island", isFree: true, url: "https://your-server.com/cartoons/ep3.mp4" },
+      { id: 4, ep: 4, title: "Cartoon Ep 4: The Mystery Castle", isFree: false, url: "https://your-server.com/cartoons/ep4.mp4" },
+      { id: 5, ep: 5, title: "Cartoon Ep 5: Grand Finale Battle", isFree: false, url: "https://your-server.com/cartoons/ep5.mp4" }
+    ];
+
+    let pendingEpisodeIndex = null;
+
+    // Helper: Get or create unique browser device ID
+    function getDeviceId() {
+      let devId = localStorage.getItem('wanzu_cartoon_dev_id');
+      if (!devId) {
+        devId = 'DEV-KIDS-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now();
+        localStorage.setItem('wanzu_cartoon_dev_id', devId);
+      }
+      return devId;
+    }
+
+    // Helper: Get code bindings
+    function getCodeBindings() {
+      const data = localStorage.getItem('wanzu_cartoon_bound_codes');
+      return data ? JSON.parse(data) : {};
+    }
+
+    // Check if current device is unlocked
+    function isDeviceUnlocked() {
+      const activeCode = localStorage.getItem('wanzu_cartoon_active_session');
+      const devId = getDeviceId();
+      const bindings = getCodeBindings();
+
+      return activeCode && bindings[activeCode] === devId;
+    }
+
+    // Render Cartoon Episode Cards
+    function renderCartoons() {
+      const container = document.getElementById('cartoonGrid');
+      container.innerHTML = '';
+
+      const unlocked = isDeviceUnlocked();
+
+      cartoons.forEach((item, index) => {
+        const card = document.createElement('div');
+        const isLocked = !item.isFree && !unlocked;
+
+        card.className = `bg-navy-800 border ${isLocked ? 'border-amber-500/30' : 'border-navy-700 hover:border-cyan-accent'} p-4 rounded-xl cursor-pointer transition-all flex justify-between items-center`;
+        card.onclick = () => selectCartoon(index);
+
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg ${isLocked ? 'bg-amber-500/10 text-amber-400' : 'bg-cyan-accent/10 text-cyan-accent'} flex items-center justify-center font-bold text-sm">
+              ${isLocked ? '<i class="fa-solid fa-lock"></i>' : item.ep}
+            </div>
+            <div>
+              <h4 class="text-white font-bold text-sm">${item.title}</h4>
+              <p class="text-xs ${isLocked ? 'text-amber-400 font-semibold' : 'text-emerald-400'} mt-0.5">
+                ${isLocked ? 'VIP Code Required (UGX 2,000)' : 'Free Watch'}
+              </p>
+            </div>
+          </div>
+          <button class="${isLocked ? 'bg-amber-500 text-navy-950' : 'bg-cyan-accent text-navy-950'} font-bold px-3 py-1.5 rounded text-xs uppercase">
+            ${isLocked ? 'Unlock' : 'Play'}
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+
+      // Update Top Status Badge if Unlocked
+      if (unlocked) {
+        const badge = document.getElementById('passStatusBadge');
+        badge.innerText = "VIP Unlocked Device";
+        badge.className = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold px-3 py-1 rounded-full";
+      }
+    }
+
+    // Select Cartoon Logic
+    function selectCartoon(index) {
+      const item = cartoons[index];
+      const unlocked = isDeviceUnlocked();
+
+      if (!item.isFree && !unlocked) {
+        pendingEpisodeIndex = index;
+        openModal();
+        return;
+      }
+
+      playVideo(item);
+    }
+
+    // Load Stream into Player
+    function playVideo(item) {
+      const player = document.getElementById('cartoonPlayer');
+      const source = document.getElementById('cartoonSource');
+
+      source.src = item.url;
+      player.load();
+      player.play();
+
+      document.getElementById('nowPlayingTitle').innerText = item.title;
+      document.getElementById('nowPlayingBadge').innerText = item.isFree ? 'FREE VIDEO' : 'VIP UNLOCKED';
+      document.getElementById('nowPlayingBadge').className = item.isFree ? 'text-xs font-bold text-emerald-400 uppercase tracking-wider' : 'text-xs font-bold text-cyan-accent uppercase tracking-wider';
+    }
+
+    // Single-Device Verification Handler
+    function verifyCartoonCode(event) {
+      event.preventDefault();
+      const codeInput = document.getElementById('cartoonCodeInput').value.trim().toUpperCase();
+      const errorMsg = document.getElementById('modalError');
+      const devId = getDeviceId();
+      const bindings = getCodeBindings();
+
+      // Step 1: Check master validity
+      if (!ADMIN_VALID_CODES.includes(codeInput)) {
+        showError("Invalid code. Pay 2k and contact WhatsApp +256754958464 for a valid code.");
+        return;
+      }
+
+      // Step 2: Single Device Lock Check
+      if (bindings[codeInput] && bindings[codeInput] !== devId) {
+        showError("Code in use on another device. Get a new code.");
+        return;
+      }
+
+      // Step 3: Bind Code to Current Device
+      bindings[codeInput] = devId;
+      localStorage.setItem('wanzu_cartoon_bound_codes', JSON.stringify(bindings));
+      localStorage.setItem('wanzu_cartoon_active_session', codeInput);
+
+      closeModal();
+      renderCartoons();
+
+      if (pendingEpisodeIndex !== null) {
+        playVideo(cartoons[pendingEpisodeIndex]);
+        pendingEpisodeIndex = null;
+      }
+    }
+
+    function showError(msg) {
+      const err = document.getElementById('modalError');
+      err.innerText = msg;
+      err.classList.remove('hidden');
+    }
+
+    function openModal() {
+      document.getElementById('modalError').classList.add('hidden');
+      document.getElementById('cartoonCodeInput').value = '';
+      document.getElementById('lockModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('lockModal').classList.add('hidden');
+    }
+
+    // Init
+    renderCartoons();
+  </script>
+</body>
+</html>
