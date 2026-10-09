@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP Access — Wanzu Films</title>
+  <title>VIP  Access — Wanzu Films</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -31,76 +31,73 @@
 
   <main class="max-w-4xl mx-auto p-4 mt-6">
     
-    <!-- Lock Screen Box (Shown by default) -->
+    <!-- Lock Screen Box -->
     <div id="gateBox" class="bg-navy-800 border border-navy-700 rounded-xl p-6 md:p-8 text-center max-w-lg mx-auto shadow-2xl">
       <div class="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/30">
-        <i class="fa-solid fa-lock text-2xl"></i>
+        <i class="fa-solid fa-mobile-screen-button text-2xl"></i>
       </div>
 
-      <h1 class="text-2xl font-bold text-white mb-2">Restricted Access</h1>
-      <p class="text-slate-400 text-sm mb-6">This section requires active age verification and a premium pass (UGX 2,000).</p>
+      <h1 class="text-2xl font-bold text-white mb-2">Restricted Single-Device Access</h1>
+      <p class="text-slate-400 text-sm mb-6">Each code locks to 1 device only. Unlocking costs UGX 2,000.</p>
 
       <!-- Steps Card -->
       <div class="bg-navy-900 border border-navy-700 p-4 rounded-lg text-left text-xs text-slate-300 space-y-2 mb-6">
-        <p class="font-bold text-cyan-accent uppercase tracking-wider">How to unlock access:</p>
-        <p>1. Pay <strong>UGX 2,000</strong> for your access pass.</p>
-        <p>2. Send receipt/message to WhatsApp: <strong class="text-white">+256 754 958 464</strong></p>
-        <p>3. Get your 6-digit access code and enter it below.</p>
+        <p class="font-bold text-cyan-accent uppercase tracking-wider">Instructions:</p>
+        <p>1. Pay <strong>UGX 2,000</strong> to get your personal code.</p>
+        <p>2. WhatsApp proof to: <strong class="text-white">+256 754 958 464</strong></p>
+        <p>3. Once activated on this device, it <strong>cannot</strong> be shared or transferred to another phone or PC.</p>
       </div>
 
-      <!-- WhatsApp Direct Button -->
-      <a href="https://wa.me/256754958464?text=Hello%2C%20I%20want%20to%20pay%202000%20UGX%20for%20the%20VIP%20Access%20Code" 
+      <!-- WhatsApp Button -->
+      <a href="https://wa.me/256754958464?text=Hello%2C%20I%20want%20to%20pay%202000%20UGX%20for%20a%20Single-Device%20VIP%20Code" 
          target="_blank" 
          class="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-all mb-6 text-sm">
-        <i class="fa-brands fa-whatsapp text-lg"></i> Get Pass Code via WhatsApp
+        <i class="fa-brands fa-whatsapp text-lg"></i> Get Code via WhatsApp
       </a>
 
-      <!-- Code Input Form -->
-      <form onsubmit="verifyCode(event)" class="space-y-4">
+      <!-- Input Form -->
+      <form onsubmit="verifyDeviceCode(event)" class="space-y-4">
         <div>
-          <input type="text" id="accessCode" placeholder="Enter Secret Passcode" required 
-                 class="w-full bg-navy-950 border border-navy-700 focus:border-cyan-accent text-white text-center text-lg font-mono tracking-widest py-3 px-4 rounded-lg outline-none transition-all">
+          <input type="text" id="accessCode" placeholder="Enter Secret Code" required 
+                 class="w-full bg-navy-950 border border-navy-700 focus:border-cyan-accent text-white text-center text-lg font-mono tracking-widest py-3 px-4 rounded-lg outline-none transition-all uppercase">
         </div>
-        <p id="errorMsg" class="text-rose-400 text-xs hidden font-semibold"></p>
+        <p id="errorMsg" class="text-rose-400 text-xs hidden font-semibold bg-rose-500/10 border border-rose-500/20 p-2 rounded"></p>
         <button type="submit" class="w-full bg-cyan-accent hover:bg-cyan-400 text-navy-950 font-bold py-3 px-4 rounded-lg transition-all text-sm uppercase tracking-wider">
-          Unlock Content
+          Unlock on this Device
         </button>
       </form>
     </div>
 
-    <!-- Protected Content Area (Hidden until verified) -->
+    <!-- Protected Content Area -->
     <div id="contentArea" class="hidden space-y-6">
-      
       <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 p-4 rounded-lg flex items-center justify-between text-sm">
-        <span><i class="fa-solid fa-circle-check mr-2"></i> Access granted successfully!</span>
-        <span class="text-xs text-slate-400">Verified Session</span>
+        <span><i class="fa-solid fa-shield-halved mr-2"></i> Device Authorized & Access Granted</span>
+        <button onclick="lockDevice()" class="text-xs text-rose-400 underline font-semibold">Logout Device</button>
       </div>
 
-      <!-- Player -->
+      <!-- Video Player -->
       <div class="bg-navy-800 border border-navy-700 rounded-xl overflow-hidden shadow-xl">
         <div class="relative w-full aspect-video bg-black">
           <video id="mainPlayer" controls controlsList="nodownload" class="w-full h-full">
             <source id="videoSource" src="https://your-server.com/videos/vip_stream_01.mp4" type="video/mp4">
-            Your browser does not support HTML5 video playback.
+            Your browser does not support HTML5 video.
           </video>
         </div>
         <div class="p-4">
-          <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">VIP Feature</span>
+          <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">VIP Single-Device Stream</span>
           <h2 id="videoTitle" class="text-xl font-bold text-white mt-1">Exclusive Feature Film</h2>
         </div>
       </div>
 
-      <!-- Video List -->
+      <!-- Video Catalog -->
       <h3 class="text-lg font-bold text-white border-b border-navy-700 pb-2">Available Exclusive List</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="videoList">
-        <!-- Rendered via JavaScript -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="videoList"></div>
     </div>
 
   </main>
 
   <script>
-    // List of valid admin-generated access codes
+    // System Master Admin Codes
     const VALID_ADMIN_CODES = [
       "WANZU2026",
       "VIP2000",
@@ -109,7 +106,7 @@
       "CODE754"
     ];
 
-    // Protected Video Catalog
+    // Protected Videos
     const vipVideos = [
       {
         title: "Exclusive Action Release",
@@ -123,20 +120,65 @@
       }
     ];
 
-    function verifyCode(event) {
-      event.preventDefault();
-      const input = document.getElementById('accessCode').value.trim().toUpperCase();
-      const errorMsg = document.getElementById('errorMsg');
-
-      if (VALID_ADMIN_CODES.includes(input)) {
-        // Hide Gate, Show Content
-        document.getElementById('gateBox').classList.add('hidden');
-        document.getElementById('contentArea').classList.remove('hidden');
-        renderVideoList();
-      } else {
-        errorMsg.innerText = "Invalid or expired passcode. Please contact support via WhatsApp.";
-        errorMsg.classList.remove('hidden');
+    // Helper: Generate or Get a unique Device ID for current browser
+    function getDeviceId() {
+      let devId = localStorage.getItem('wanzu_device_id');
+      if (!devId) {
+        devId = 'DEV-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now();
+        localStorage.setItem('wanzu_device_id', devId);
       }
+      return devId;
+    }
+
+    // Load persistent bindings from storage
+    function getDeviceBindings() {
+      const data = localStorage.getItem('wanzu_bound_codes');
+      return data ? JSON.parse(data) : {};
+    }
+
+    function verifyDeviceCode(event) {
+      if(event) event.preventDefault();
+      
+      const inputCode = document.getElementById('accessCode').value.trim().toUpperCase();
+      const errorMsg = document.getElementById('errorMsg');
+      const currentDeviceId = getDeviceId();
+      const codeBindings = getDeviceBindings();
+
+      // Step 1: Check if code exists in Admin Master List
+      if (!VALID_ADMIN_CODES.includes(inputCode)) {
+        showError("Invalid code. Please pay 2k and get a valid code via WhatsApp.");
+        return;
+      }
+
+      // Step 2: Check if code is already bound to another device
+      if (codeBindings[inputCode] && codeBindings[inputCode] !== currentDeviceId) {
+        showError("Code in use on another device. Get a new code.");
+        return;
+      }
+
+      // Step 3: Bind code to this device & grant access
+      codeBindings[inputCode] = currentDeviceId;
+      localStorage.setItem('wanzu_bound_codes', JSON.stringify(codeBindings));
+      localStorage.setItem('wanzu_active_session', inputCode);
+
+      unlockUI();
+    }
+
+    function showError(msg) {
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.innerText = msg;
+      errorMsg.classList.remove('hidden');
+    }
+
+    function unlockUI() {
+      document.getElementById('gateBox').classList.add('hidden');
+      document.getElementById('contentArea').classList.remove('hidden');
+      renderVideoList();
+    }
+
+    function lockDevice() {
+      localStorage.removeItem('wanzu_active_session');
+      location.reload();
     }
 
     function renderVideoList() {
@@ -170,6 +212,15 @@
 
       document.getElementById('videoTitle').innerText = vid.title;
     }
+
+    // Auto-login on page load if this device was previously authorized
+    window.onload = function() {
+      const activeCode = localStorage.getItem('wanzu_active_session');
+      if (activeCode) {
+        document.getElementById('accessCode').value = activeCode;
+        verifyDeviceCode(null);
+      }
+    };
   </script>
 </body>
 </html>
