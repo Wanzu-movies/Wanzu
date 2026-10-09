@@ -1,0 +1,30 @@
+{
+  "series_id": "wanzu-series-001",
+  "title": "Series Title",
+  "genre": ["Action", "Drama"],
+  "description": "Brief synopsis of the series.",
+  "poster_url": "https://wanzufilms.com/posters/series-title.jpg",
+  "seasons": [
+    {
+      "season_number": 1,
+      "episodes": [
+        {
+          "episode_number": 1,
+          "title": "Episode 1: The Beginning",
+          "duration": "45m",
+          "release_date": "2026-10-09",
+          "stream_url": "https://wanzufilms.com/stream/s1e1.mp4",
+          "thumbnail_url": "https://wanzufilms.com/thumbs/s1e1.jpg"
+        },
+        {
+          "episode_number": 2,
+          "title": "Episode 2: Next Chapter",
+          "duration": "42m",
+          "release_date": "2026-10-16",
+          "stream_url": "https://wanzufilms.com/stream/s1e2.mp4",
+          "thumbnail_url": "https://wanzufilms.com/thumbs/s1e2.jpg"
+        }
+      ]
+    }
+  ]
+}
