@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wanzu Films — Series Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
       --bg-dark: #030a16;
@@ -17,21 +19,16 @@
       --accent-cyan-hover: #7dd3fc;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       line-height: 1.6;
       padding-bottom: 60px;
     }
 
-    /* Navbar */
     .navbar {
       background-color: rgba(3, 10, 22, 0.95);
       border-bottom: 1px solid var(--border-color);
@@ -55,13 +52,10 @@
       font-size: 1.25rem;
       color: #ffffff;
       text-decoration: none;
-      letter-spacing: 1px;
       cursor: pointer;
     }
 
-    .brand span {
-      color: var(--accent-cyan);
-    }
+    .brand span { color: var(--accent-cyan); }
 
     .back-btn {
       background-color: var(--bg-elevated);
@@ -74,12 +68,6 @@
       display: none;
     }
 
-    .back-btn:hover {
-      background-color: var(--accent-cyan);
-      color: var(--bg-dark);
-    }
-
-    /* Common Container */
     .container {
       max-width: 1200px;
       margin: 2rem auto;
@@ -94,7 +82,6 @@
       padding-bottom: 0.5rem;
     }
 
-    /* Series Grid (Level 1) */
     .series-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -115,7 +102,6 @@
     .series-card:hover {
       transform: translateY(-5px);
       border-color: var(--accent-cyan);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
 
     .series-poster {
@@ -125,18 +111,12 @@
       background-color: var(--bg-elevated);
     }
 
-    .series-info {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
+    .series-info { padding: 1rem; }
 
     .series-badge {
       font-size: 0.75rem;
       color: var(--accent-cyan);
       font-weight: 700;
-      margin-bottom: 0.25rem;
       text-transform: uppercase;
     }
 
@@ -146,37 +126,8 @@
       margin-bottom: 0.5rem;
     }
 
-    .series-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+    #episodesView { display: none; }
 
-    /* Episode View (Level 2) */
-    #episodesView {
-      display: none;
-    }
-
-    .hero-details {
-      margin-bottom: 2rem;
-    }
-
-    .hero-details h1 {
-      font-size: 2.2rem;
-      color: #ffffff;
-    }
-
-    .hero-meta {
-      color: var(--accent-cyan);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Player */
     .player-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -194,10 +145,8 @@
 
     .video-wrapper iframe {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       border: none;
     }
 
@@ -220,12 +169,6 @@
       font-weight: 600;
     }
 
-    .btn:hover {
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
-    }
-
-    /* Episode Grid */
     .episode-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -241,12 +184,7 @@
       transition: all 0.2s ease;
     }
 
-    .ep-card:hover {
-      border-color: var(--accent-cyan);
-      background-color: var(--bg-elevated);
-    }
-
-    .ep-card.active {
+    .ep-card:hover, .ep-card.active {
       border-color: var(--accent-cyan);
       background-color: var(--bg-elevated);
     }
@@ -261,15 +199,6 @@
       color: #ffffff;
       font-size: 0.95rem;
       margin: 0.25rem 0;
-    }
-
-    .ep-desc {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
   </style>
 </head>
@@ -288,11 +217,11 @@
     <div class="series-grid" id="seriesGrid"></div>
   </main>
 
-  <!-- Level 2: Individual Series & Episodes View -->
+  <!-- Level 2: Episode List & Player -->
   <main class="container" id="episodesView">
-    <div class="hero-details">
-      <div class="hero-meta" id="seriesGenre">GENRE</div>
-      <h1 id="seriesTitle">Series Title</h1>
+    <div class="hero-details mb-6">
+      <div class="hero-meta" id="seriesGenre" style="color: var(--accent-cyan); font-weight: 600;">GENRE</div>
+      <h1 id="seriesTitle" style="font-size: 2.2rem; color: #fff;">Series Title</h1>
       <p id="seriesDesc" style="color: var(--text-muted); margin-top: 0.5rem;"></p>
     </div>
 
@@ -317,42 +246,111 @@
     <div class="episode-grid" id="episodeGrid"></div>
   </main>
 
+  <!-- Single Device Unlock Modal -->
+  <div id="lockModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-[#0a172c] border border-slate-700 rounded-2xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-14 h-14 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-500/30">
+        <i class="fa-solid fa-lock text-2xl"></i>
+      </div>
+
+      <h3 class="text-xl font-bold text-white mb-2">Unlock Full Series Access</h3>
+      <p class="text-slate-400 text-xs mb-6">Episodes 1 to 4 are free! Episodes 5 and beyond require a single-device VIP pass (UGX 2,000).</p>
+
+      <div class="bg-[#030a16] border border-slate-800 p-3.5 rounded-lg text-left text-xs text-slate-300 space-y-2 mb-6">
+        <p class="font-bold text-[#38bdf8] uppercase tracking-wider">How to unlock:</p>
+        <p>1. Pay <strong>UGX 2,000</strong> for your passcode.</p>
+        <p>2. Send receipt/message to WhatsApp: <strong class="text-white">+256 754 958 464</strong></p>
+        <p>3. Enter your secret code below to activate on this device.</p>
+      </div>
+
+      <a href="https://wa.me/256754958464?text=Hello%2C%20I%20want%20to%20pay%202000%20UGX%20to%20unlock%20Series%20Episodes%20on%20my%20device" 
+         target="_blank" 
+         class="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-all mb-4 text-xs uppercase tracking-wider">
+        <i class="fa-brands fa-whatsapp text-base"></i> Get Secret Code via WhatsApp
+      </a>
+
+      <form onsubmit="verifySeriesCode(event)" class="space-y-3">
+        <input type="text" id="seriesCodeInput" placeholder="ENTER SECRET CODE" required 
+               class="w-full bg-[#030a16] border border-slate-700 focus:border-[#38bdf8] text-white text-center text-base font-mono tracking-widest py-2.5 px-4 rounded-lg outline-none uppercase">
+        <p id="modalError" class="text-rose-400 text-xs hidden font-semibold bg-rose-500/10 border border-rose-500/20 p-2 rounded"></p>
+        <button type="submit" class="w-full bg-[#38bdf8] hover:bg-sky-400 text-[#030a16] font-bold py-3 px-4 rounded-lg transition-all text-xs uppercase tracking-wider">
+          Unlock on This Device
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script>
-    // Series Database
+    const ADMIN_VALID_CODES = ["WANZU2026", "VIP2000", "SERIES2K", "PASS958", "SECRET754"];
+
+    // Series Data Structure: EVERY episode has its own unique video URL!
     const seriesData = [
       {
         id: "jumong",
         name: "Jumong (주몽)",
         genre: "Historical Epic • 40 Episodes",
-        desc: "The legendary story of Prince Jumong, who defeats the Han Empire to found the ancient Kingdom of Goguryeo.",
+        desc: "The legendary story of Prince Jumong, founding king of Goguryeo.",
         poster: "https://via.placeholder.com/240x360/0a172c/38bdf8?text=JUMONG",
-        totalEpisodes: 40,
-        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        episodes: [
+          { ep: 1, title: "The Gojoseon Struggle", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 2, title: "Birth of a Prince", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 3, title: "Life at Buyeo Palace", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 4, title: "Expulsion from the Realm", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 5, title: "Meeting So Seo-no", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 6, title: "The Secret Master", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 7, title: "Truth Revealed", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 8, title: "Swordsmanship Training", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 9, title: "The Conspiracy", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 10, title: "Fall of Hae Mo-su", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+          // Add Ep 11 to Ep 40 with their respective URLs here
+        ]
       },
       {
         id: "evernight",
         name: "Ever Night (장야)",
         genre: "Wuxia Fantasy • 60 Episodes",
-        desc: "Ning Que fights to protect his companion Sang Sang and uncovers ancient martial mysteries.",
+        desc: "Ning Que fights to protect his companion Sang Sang.",
         poster: "https://via.placeholder.com/240x360/0a172c/38bdf8?text=EVER+NIGHT",
-        totalEpisodes: 60,
-        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
-      },
-      {
-        id: "firstfive",
-        name: "First Five",
-        genre: "Action Thriller • 30 Episodes",
-        desc: "An elite operative squad unites to dismantle an underground Syndicate operating in the shadows.",
-        poster: "https://via.placeholder.com/240x360/0a172c/38bdf8?text=FIRST+FIVE",
-        totalEpisodes: 30,
-        embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+        episodes: [
+          { ep: 1, title: "Episode 1", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 2, title: "Episode 2", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 3, title: "Episode 3", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 4, title: "Episode 4", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 5, title: "Episode 5", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+          { ep: 6, title: "Episode 6", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+        ]
       }
     ];
 
     let currentSeries = null;
     let currentEpisodeIndex = 0;
+    let pendingEpisodeIndex = null;
 
-    // Render Series List
+    function getDeviceId() {
+      let devId = localStorage.getItem('wanzu_series_dev_id');
+      if (!devId) {
+        devId = 'DEV-SERIES-' + Math.random().toString(36).substring(2, 9) + '-' + Date.now();
+        localStorage.setItem('wanzu_series_dev_id', devId);
+      }
+      return devId;
+    }
+
+    function getCodeBindings() {
+      const data = localStorage.getItem('wanzu_series_bound_codes');
+      return data ? JSON.parse(data) : {};
+    }
+
+    function isDeviceUnlocked() {
+      const activeCode = localStorage.getItem('wanzu_series_active_session');
+      const devId = getDeviceId();
+      const bindings = getCodeBindings();
+      return activeCode && bindings[activeCode] === devId;
+    }
+
     function renderCatalog() {
       const grid = document.getElementById('seriesGrid');
       grid.innerHTML = '';
@@ -367,14 +365,13 @@
           <div class="series-info">
             <span class="series-badge">${series.genre}</span>
             <h3 class="series-name">${series.name}</h3>
-            <p class="series-desc">${series.desc}</p>
+            <p style="font-size:0.85rem; color:var(--text-muted);">${series.desc}</p>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    // Open Selected Series
     function openSeries(seriesId) {
       currentSeries = seriesData.find(s => s.id === seriesId);
       currentEpisodeIndex = 0;
@@ -391,7 +388,6 @@
       playEpisode(0);
     }
 
-    // Return to Series Catalog
     function showCatalog() {
       document.getElementById('catalogView').style.display = 'block';
       document.getElementById('episodesView').style.display = 'none';
@@ -399,52 +395,107 @@
       document.getElementById('videoPlayer').src = '';
     }
 
-    // Render Episode List
     function renderEpisodes() {
       const grid = document.getElementById('episodeGrid');
       grid.innerHTML = '';
+      const unlocked = isDeviceUnlocked();
 
-      for (let i = 1; i <= currentSeries.totalEpisodes; i++) {
-        const index = i - 1;
+      currentSeries.episodes.forEach((item, index) => {
+        const epNum = item.ep;
+        const isFree = epNum <= 4;
+        const isLocked = !isFree && !unlocked;
+
         const card = document.createElement('div');
         card.className = `ep-card ${index === currentEpisodeIndex ? 'active' : ''}`;
         card.onclick = () => playEpisode(index);
 
         card.innerHTML = `
-          <span class="ep-badge">EPISODE ${i}</span>
-          <h4 class="ep-title">${currentSeries.name} - Ep ${i}</h4>
-          <p class="ep-desc">Official full stream for episode ${i} of ${currentSeries.name}.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="ep-badge">EPISODE ${epNum}</span>
+            <span style="font-size: 0.7rem; font-weight: 700; color: ${isLocked ? '#f59e0b' : '#10b981'};">
+              ${isLocked ? '<i class="fa-solid fa-lock"></i> LOCK (2K)' : 'FREE'}
+            </span>
+          </div>
+          <h4 class="ep-title">${currentSeries.name} - Ep ${epNum}</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">${item.title}</p>
         `;
 
         grid.appendChild(card);
-      }
+      });
     }
 
-    // Play Specific Episode
     function playEpisode(index) {
-      currentEpisodeIndex = index;
-      const epNum = index + 1;
+      const epItem = currentSeries.episodes[index];
+      const isFree = epItem.ep <= 4;
+      const unlocked = isDeviceUnlocked();
 
-      document.getElementById('videoPlayer').src = currentSeries.embedUrl;
-      document.getElementById('nowPlayingBadge').innerText = `EPISODE ${epNum}`;
-      document.getElementById('nowPlayingTitle').innerText = `${currentSeries.name} - Episode ${epNum}`;
+      if (!isFree && !unlocked) {
+        pendingEpisodeIndex = index;
+        openModal();
+        return;
+      }
+
+      currentEpisodeIndex = index;
+      document.getElementById('videoPlayer').src = epItem.url; // Dynamic URL for each episode
+      document.getElementById('nowPlayingBadge').innerText = `EPISODE ${epItem.ep} ${isFree ? '(FREE)' : '(VIP)'}`;
+      document.getElementById('nowPlayingTitle').innerText = `${currentSeries.name} - Ep ${epItem.ep}: ${epItem.title}`;
 
       renderEpisodes();
     }
 
     function prevEpisode() {
-      if (currentEpisodeIndex > 0) {
-        playEpisode(currentEpisodeIndex - 1);
-      }
+      if (currentEpisodeIndex > 0) playEpisode(currentEpisodeIndex - 1);
     }
 
     function nextEpisode() {
-      if (currentEpisodeIndex < currentSeries.totalEpisodes - 1) {
-        playEpisode(currentEpisodeIndex + 1);
+      if (currentEpisodeIndex < currentSeries.episodes.length - 1) playEpisode(currentEpisodeIndex + 1);
+    }
+
+    function verifySeriesCode(event) {
+      event.preventDefault();
+      const codeInput = document.getElementById('seriesCodeInput').value.trim().toUpperCase();
+      const devId = getDeviceId();
+      const bindings = getCodeBindings();
+
+      if (!ADMIN_VALID_CODES.includes(codeInput)) {
+        showError("Invalid code. Pay 2k and contact WhatsApp +256754958464 for a valid code.");
+        return;
+      }
+
+      if (bindings[codeInput] && bindings[codeInput] !== devId) {
+        showError("Code in use on another device. Get a new code.");
+        return;
+      }
+
+      bindings[codeInput] = devId;
+      localStorage.setItem('wanzu_series_bound_codes', JSON.stringify(bindings));
+      localStorage.setItem('wanzu_series_active_session', codeInput);
+
+      closeModal();
+      renderEpisodes();
+
+      if (pendingEpisodeIndex !== null) {
+        playEpisode(pendingEpisodeIndex);
+        pendingEpisodeIndex = null;
       }
     }
 
-    // Init
+    function showError(msg) {
+      const err = document.getElementById('modalError');
+      err.innerText = msg;
+      err.classList.remove('hidden');
+    }
+
+    function openModal() {
+      document.getElementById('modalError').classList.add('hidden');
+      document.getElementById('seriesCodeInput').value = '';
+      document.getElementById('lockModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('lockModal').classList.add('hidden');
+    }
+
     renderCatalog();
   </script>
 </body>
