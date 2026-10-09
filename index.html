@@ -158,25 +158,27 @@
     </aside>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-
-        <!-- Category Tabs -->
-        <section class="flex items-center justify-between gap-4 overflow-x-auto pb-2 border-b border-navy-800">
-            <div class="flex items-center gap-2" id="categoryTabs">
-                <button onclick="filterCategory('All')" data-category="All" class="cat-btn bg-cyan-accent text-navy-950 font-bold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all shadow-md">
-                    All Content
-                </button>
-                <button onclick="filterCategory('Action')" data-category="Action" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
-                    <i class="fa-solid fa-fire text-amber-400 mr-1.5"></i>Action
-                </button>
-                <button onclick="filterCategory('Films')" data-category="Films" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
-                    <i class="fa-solid fa-video text-cyan-400 mr-1.5"></i>Films
-                </button>
-                <button onclick="filterCategory('Series')" data-category="Series" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
-                    <i class="fa-solid fa-tv text-purple-400 mr-1.5"></i>Series
-                </button>
-                <button onclick="filterCategory('Trending')" data-category="Trending" class="cat-btn bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
-                    <i class="fa-solid fa-bolt text-rose-400 mr-1.5"></i>Trending
-                </button>
+<!-- Category Tabs -->
+<section class="flex items-center justify-between gap-4 overflow-x-auto pb-2 border-b border-navy-800">
+    <div class="flex items-center gap-2" id="categoryTabs">
+        <a href="index.html" class="cat-btn inline-block bg-cyan-accent text-navy-950 font-bold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all shadow-md">
+            All Content
+        </a>
+        <a href="Action.html" class="cat-btn inline-block bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+            <i class="fa-solid fa-fire text-amber-400 mr-1.5"></i>Action
+        </a>
+        <a href="filmd.html" class="cat-btn inline-block bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+            <i class="fa-solid fa-video text-cyan-400 mr-1.5"></i>Films
+        </a>
+        <a href="Series.html" class="cat-btn inline-block bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+            <i class="fa-solid fa-tv text-purple-400 mr-1.5"></i>Series
+        </a>
+        <a href="trending.html" class="cat-btn inline-block bg-navy-800 hover:bg-navy-700 text-slate-300 font-semibold px-4 py-2 rounded-full text-xs uppercase tracking-wider transition-all">
+            <i class="fa-solid fa-bolt text-rose-400 mr-1.5"></i>Trending
+        </a>
+    </div>
+</section>
+        
             </div>
             
             <div id="resultsCount" class="text-xs font-semibold text-slate-400 shrink-0">
